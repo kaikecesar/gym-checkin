@@ -1,4 +1,7 @@
 // Application
-import { app } from "./app.ts";
+import { app } from './app.ts';
+import { env } from './env/index.ts';
 
-app.listen({ host: '0.0.0.0', port: 3333 }, () => console.log('🚀 HTTP Server Running!'))
+app.listen({ host: '0.0.0.0', port: env.PORT }, () =>
+  console.log('🚀 HTTP Server Running!'),
+);
