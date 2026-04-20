@@ -1,4 +1,4 @@
 // Libraries
-import fastify from "fastify";
+import fastify from 'fastify';
 
 export const app = fastify();
