@@ -3,6 +3,7 @@ import { hash } from 'bcryptjs';
 
 // Application
 import { prisma } from '../lib/prisma.ts';
+import { UsersRepository } from '../repositories/users.repository.ts';
 
 interface RegisterUserRequest {
   name: string;
@@ -27,11 +28,11 @@ export async function registerUser({
     throw new Error('E-mail already exists.');
   }
 
-  await prisma.user.create({
-    data: {
-      name,
-      email,
-      password_hash: passwordHash,
-    },
+  const usersRepository = new UsersRepository();
+
+  await usersRepository.create({
+    name,
+    email,
+    password_hash: passwordHash,
   });
 }
