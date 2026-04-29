@@ -58,7 +58,7 @@ describe('Users service', () => {
         password: fakePassword,
       });
 
-      expect(() =>
+      await expect(() =>
         registerUser.execute({
           name: faker.person.fullName(),
           email: fakeEmail,

@@ -6,3 +6,6 @@ build
 .env
 
 /src/generated/prisma
+
+# Tests
+coverage
