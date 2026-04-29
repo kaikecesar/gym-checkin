@@ -5,6 +5,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 // Application
 import { RegisterUser } from '../../services/users.ts';
 import { UsersRepository } from '../../repositories/users.repository.ts';
+import { UserAlreadyExistsError } from '../../services/errors.ts';
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
   const registerBodySchema = z.object({
@@ -20,7 +21,11 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     const registerUser = new RegisterUser(usersRepository);
     await registerUser.execute({ name, email, password });
   } catch (error) {
-    return reply.status(409).send();
+    if (error instanceof UserAlreadyExistsError) {
+      return reply.status(409).send({ message: error.message });
+    }
+
+    return reply.status(500).send(); // TODO: fix me
   }
 
   return reply.status(201).send();

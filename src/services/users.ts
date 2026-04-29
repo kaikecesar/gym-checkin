@@ -2,8 +2,8 @@
 import { hash } from 'bcryptjs';
 
 // Application
-import { prisma } from '../lib/prisma.ts';
 import type { IUsersRepository } from '../repositories/users.repository.types.ts';
+import { UserAlreadyExistsError } from './errors.ts';
 
 interface RegisterUserRequest {
   name: string;
@@ -19,7 +19,7 @@ export class RegisterUser {
     const userWithSameEmail = await this.usersRepository.findByEmail(email);
 
     if (userWithSameEmail) {
-      throw new Error('E-mail already exists.');
+      throw new UserAlreadyExistsError();
     }
 
     // Create password hash
