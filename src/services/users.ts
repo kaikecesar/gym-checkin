@@ -3,6 +3,7 @@ import { hash } from 'bcryptjs';
 
 // Application
 import { prisma } from '../lib/prisma.ts';
+import type { IUsersRepository } from '../repositories/users.repository.types.ts';
 
 interface RegisterUserRequest {
   name: string;
@@ -11,20 +12,18 @@ interface RegisterUserRequest {
 }
 
 export class RegisterUser {
-  constructor(private usersRepository: any) {}
+  constructor(private usersRepository: IUsersRepository) {}
 
   async execute({ name, email, password }: RegisterUserRequest) {
-    // Create password hash
-    const passwordHash = await hash(password, 6);
-
     // Validate
-    const userWithSameEmail = await prisma.user.findUnique({
-      where: { email },
-    });
+    const userWithSameEmail = await this.usersRepository.findByEmail(email);
 
     if (userWithSameEmail) {
       throw new Error('E-mail already exists.');
     }
+
+    // Create password hash
+    const passwordHash = await hash(password, 6);
 
     await this.usersRepository.create({
       name,
