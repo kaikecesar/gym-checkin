@@ -1,8 +1,8 @@
 // Libraries
-import type { Prisma, User } from '../generated/prisma/client.ts';
+import type { Prisma, User } from '../../generated/prisma/client.ts';
 
 // Application
-import { prisma } from '../lib/prisma.ts';
+import { prisma } from '../../lib/prisma.ts';
 import type { IUsersRepository } from './users.repository.types.ts';
 
 export class UsersRepository implements IUsersRepository {

@@ -1,8 +1,9 @@
 // Libraries
 import { hash } from 'bcryptjs';
+import type { User } from '../generated/prisma/client.ts';
 
 // Application
-import type { IUsersRepository } from '../repositories/users.repository.types.ts';
+import type { IUsersRepository } from '../repositories/database/users.repository.types.ts';
 import { UserAlreadyExistsError } from './errors.ts';
 
 interface RegisterUserRequest {
@@ -11,10 +12,18 @@ interface RegisterUserRequest {
   password: string;
 }
 
+interface RegisterUserResponse {
+  user: User;
+}
+
 export class RegisterUser {
   constructor(private usersRepository: IUsersRepository) {}
 
-  async execute({ name, email, password }: RegisterUserRequest) {
+  async execute({
+    name,
+    email,
+    password,
+  }: RegisterUserRequest): Promise<RegisterUserResponse> {
     // Validate
     const userWithSameEmail = await this.usersRepository.findByEmail(email);
 
@@ -25,10 +34,12 @@ export class RegisterUser {
     // Create password hash
     const passwordHash = await hash(password, 6);
 
-    await this.usersRepository.create({
+    const user = await this.usersRepository.create({
       name,
       email,
       password_hash: passwordHash,
     });
+
+    return { user };
   }
 }
