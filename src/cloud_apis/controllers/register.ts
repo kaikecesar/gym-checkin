@@ -1,7 +1,10 @@
 // Libraries
 import z from 'zod';
 import type { FastifyReply, FastifyRequest } from 'fastify';
-import { registerUser } from '../../services/users.ts';
+
+// Application
+import { RegisterUser } from '../../services/users.ts';
+import { UsersRepository } from '../../repositories/users.repository.ts';
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
   const registerBodySchema = z.object({
@@ -13,7 +16,9 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
   const { name, email, password } = registerBodySchema.parse(request.body);
 
   try {
-    await registerUser({ name, email, password });
+    const usersRepository = new UsersRepository();
+    const registerUser = new RegisterUser(usersRepository);
+    await registerUser.execute({ name, email, password });
   } catch (error) {
     return reply.status(409).send();
   }
