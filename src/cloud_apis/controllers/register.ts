@@ -3,7 +3,7 @@ import z from 'zod';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 // Application
-import { RegisterUser } from '../../services/users.ts';
+import { RegisterUser } from '../../services/users/users.ts';
 import { UsersRepository } from '../../repositories/database/users.repository.ts';
 import { UserAlreadyExistsError } from '../../services/errors.ts';
 

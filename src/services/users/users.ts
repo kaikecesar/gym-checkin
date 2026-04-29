@@ -1,10 +1,10 @@
 // Libraries
 import { hash } from 'bcryptjs';
-import type { User } from '../generated/prisma/client.ts';
+import type { User } from '../../generated/prisma/client.ts';
 
 // Application
-import type { IUsersRepository } from '../repositories/database/users.repository.types.ts';
-import { UserAlreadyExistsError } from './errors.ts';
+import type { IUsersRepository } from '../../repositories/database/users.repository.types.ts';
+import { UserAlreadyExistsError } from '../errors.ts';
 
 interface RegisterUserRequest {
   name: string;

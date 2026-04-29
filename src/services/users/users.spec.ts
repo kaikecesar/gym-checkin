@@ -5,8 +5,8 @@ import { faker } from '@faker-js/faker';
 
 // Application
 import { RegisterUser } from './users.ts';
-import { InMemoryUsersRepository } from '../repositories/in_memory/in_memory_users_repository.ts';
-import { UserAlreadyExistsError } from './errors.ts';
+import { InMemoryUsersRepository } from '../../repositories/in_memory/in_memory_users_repository.ts';
+import { UserAlreadyExistsError } from '../errors.ts';
 
 describe('Users service', () => {
   describe('register', () => {
