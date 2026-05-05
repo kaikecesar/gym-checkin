@@ -1,6 +1,6 @@
 // Libraries
 import { compare } from 'bcryptjs';
-import { expect, it, describe } from 'vitest';
+import { expect, it, describe, beforeEach } from 'vitest';
 import { faker } from '@faker-js/faker';
 
 // Application
@@ -10,10 +10,15 @@ import { UserAlreadyExistsError } from '../errors.ts';
 
 describe('Users service', () => {
   describe('register', () => {
-    it('should be able to register', async () => {
-      const usersRepository = new InMemoryUsersRepository();
-      const registerUser = new RegisterUser(usersRepository);
+    let usersRepository: InMemoryUsersRepository;
+    let registerUser: RegisterUser;
 
+    beforeEach(() => {
+      usersRepository = new InMemoryUsersRepository();
+      registerUser = new RegisterUser(usersRepository);
+    });
+
+    it('should be able to register', async () => {
       const fakePassword = faker.internet.password();
 
       const { user } = await registerUser.execute({
@@ -26,9 +31,6 @@ describe('Users service', () => {
     });
 
     it('should hash user password upon registration', async () => {
-      const usersRepository = new InMemoryUsersRepository();
-      const registerUser = new RegisterUser(usersRepository);
-
       const fakePassword = faker.internet.password();
 
       const { user } = await registerUser.execute({
@@ -46,9 +48,6 @@ describe('Users service', () => {
     });
 
     it('should not be able to register with same email twice', async () => {
-      const usersRepository = new InMemoryUsersRepository();
-      const registerUser = new RegisterUser(usersRepository);
-
       const fakePassword = faker.internet.password();
       const fakeEmail = faker.internet.email();
 
