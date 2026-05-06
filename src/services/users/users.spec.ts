@@ -1,12 +1,12 @@
 // Libraries
-import { compare } from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
 import { expect, it, describe, beforeEach } from 'vitest';
 import { faker } from '@faker-js/faker';
 
 // Application
-import { RegisterUser } from './users.ts';
+import { RegisterUser, UserProfile } from './users.ts';
 import { InMemoryUsersRepository } from '../../repositories/in_memory/in_memory_users_repository.ts';
-import { UserAlreadyExistsError } from '../errors.ts';
+import { ResourceNotFound, UserAlreadyExistsError } from '../errors.ts';
 
 describe('Users service', () => {
   describe('register', () => {
@@ -64,6 +64,41 @@ describe('Users service', () => {
           password: fakePassword,
         }),
       ).rejects.toBeInstanceOf(UserAlreadyExistsError);
+    });
+  });
+
+  describe('userProfile', () => {
+    let usersRepository: InMemoryUsersRepository;
+    let userProfile: UserProfile;
+
+    beforeEach(() => {
+      usersRepository = new InMemoryUsersRepository();
+      userProfile = new UserProfile(usersRepository);
+    });
+    it('should be able to get user profile', async () => {
+      // Mock users
+      const fakePassword = faker.internet.password();
+      const createUser = await usersRepository.create({
+        name: faker.internet.username(),
+        email: faker.internet.email(),
+        password_hash: await hash(fakePassword, 6),
+        id: faker.string.uuid(),
+      });
+
+      const { user } = await userProfile.execute({
+        userId: createUser.id,
+      });
+
+      expect(user.id).toEqual(expect.any(String));
+      expect(user).toEqual(createUser);
+    });
+
+    it('should not be able to get user profile with wrong id', async () => {
+      expect(() =>
+        userProfile.execute({
+          userId: 'non-existing-id',
+        }),
+      ).rejects.toBeInstanceOf(ResourceNotFound);
     });
   });
 });

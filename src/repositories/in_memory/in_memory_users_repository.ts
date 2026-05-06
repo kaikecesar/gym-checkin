@@ -8,12 +8,6 @@ import type { IUsersRepository } from '../database/users.repository.types.ts';
 export class InMemoryUsersRepository implements IUsersRepository {
   public records: User[] = [];
 
-  async findByEmail(email: string) {
-    const user = this.records.find((record) => record.email === email);
-
-    return user ?? null;
-  }
-
   async create(data: Prisma.UserCreateInput) {
     const user = {
       id: faker.string.uuid(),
@@ -26,5 +20,17 @@ export class InMemoryUsersRepository implements IUsersRepository {
     this.records.push(user);
 
     return user;
+  }
+
+  async findByEmail(email: string) {
+    const user = this.records.find((record) => record.email === email);
+
+    return user ?? null;
+  }
+
+  async findById(id: string): Promise<User | null> {
+    const user = this.records.find((record) => record.id === id);
+
+    return user ?? null;
   }
 }

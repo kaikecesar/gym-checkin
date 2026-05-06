@@ -4,8 +4,9 @@ import type { User } from '../../generated/prisma/client.ts';
 
 // Application
 import type { IUsersRepository } from '../../repositories/database/users.repository.types.ts';
-import { UserAlreadyExistsError } from '../errors.ts';
+import { ResourceNotFound, UserAlreadyExistsError } from '../errors.ts';
 
+// Register
 interface RegisterUserRequest {
   name: string;
   email: string;
@@ -13,6 +14,15 @@ interface RegisterUserRequest {
 }
 
 interface RegisterUserResponse {
+  user: User;
+}
+
+// Profile
+interface UserProfileRequest {
+  userId: string;
+}
+
+interface UserProfileResponse {
   user: User;
 }
 
@@ -39,6 +49,21 @@ export class RegisterUser {
       email,
       password_hash: passwordHash,
     });
+
+    return { user };
+  }
+}
+
+export class UserProfile {
+  constructor(private usersRepository: IUsersRepository) {}
+
+  async execute({ userId }: UserProfileRequest): Promise<UserProfileResponse> {
+    // Validate
+    const user = await this.usersRepository.findById(userId);
+
+    if (!user) {
+      throw new ResourceNotFound();
+    }
 
     return { user };
   }
