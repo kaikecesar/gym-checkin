@@ -3,9 +3,8 @@ import z from 'zod';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 // Application
-import { UsersRepository } from '../../repositories/database/users.repository.ts';
 import { InvalidCredentialsError } from '../../services/errors.ts';
-import { Auth } from '../../services/auth/auth.ts';
+import { factoryAuth } from '../../services/factories.ts';
 
 export async function auth(request: FastifyRequest, reply: FastifyReply) {
   const authBodySchema = z.object({
@@ -16,8 +15,7 @@ export async function auth(request: FastifyRequest, reply: FastifyReply) {
   const { email, password } = authBodySchema.parse(request.body);
 
   try {
-    const usersRepository = new UsersRepository();
-    const auth = new Auth(usersRepository);
+    const auth = factoryAuth();
     await auth.execute({ email, password });
   } catch (error) {
     if (error instanceof InvalidCredentialsError) {

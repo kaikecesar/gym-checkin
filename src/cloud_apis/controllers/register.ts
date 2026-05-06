@@ -3,9 +3,8 @@ import z from 'zod';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 // Application
-import { RegisterUser } from '../../services/users/users.ts';
-import { UsersRepository } from '../../repositories/database/users.repository.ts';
 import { UserAlreadyExistsError } from '../../services/errors.ts';
+import { factoryRegisterUser } from '../../services/factories.ts';
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
   const registerBodySchema = z.object({
@@ -17,8 +16,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
   const { name, email, password } = registerBodySchema.parse(request.body);
 
   try {
-    const usersRepository = new UsersRepository();
-    const registerUser = new RegisterUser(usersRepository);
+    const registerUser = factoryRegisterUser();
     await registerUser.execute({ name, email, password });
   } catch (error) {
     if (error instanceof UserAlreadyExistsError) {
