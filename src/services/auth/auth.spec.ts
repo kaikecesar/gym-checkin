@@ -4,7 +4,7 @@ import { expect, it, describe, beforeEach } from 'vitest';
 import { faker } from '@faker-js/faker';
 
 // Application
-import { InMemoryUsersRepository } from '../../repositories/in_memory/in_memory_users_repository.ts';
+import { InMemoryUsersRepository } from '../../repositories/in_memory/users/users_repository.ts';
 import { Auth } from './auth.ts';
 import { InvalidCredentialsError } from '../errors.ts';
 

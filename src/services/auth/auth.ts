@@ -3,7 +3,7 @@ import type { User } from '../../generated/prisma/client.ts';
 import { compare } from 'bcryptjs';
 
 // Application
-import type { UsersRepository } from '../../repositories/database/users.repository.ts';
+import type { UsersRepository } from '../../repositories/database/users/users.ts';
 import { InvalidCredentialsError } from '../errors.ts';
 
 interface AuthRequest {

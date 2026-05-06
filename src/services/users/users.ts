@@ -3,7 +3,7 @@ import { hash } from 'bcryptjs';
 import type { User } from '../../generated/prisma/client.ts';
 
 // Application
-import type { IUsersRepository } from '../../repositories/database/users.repository.types.ts';
+import type { IUsersRepository } from '../../repositories/database/users/types.ts';
 import { ResourceNotFound, UserAlreadyExistsError } from '../errors.ts';
 
 // Register
