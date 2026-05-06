@@ -2,7 +2,7 @@
 import type { CheckIn } from '../../generated/prisma/client.ts';
 
 // Application
-import { CheckInsRepository } from '../../repositories/database/check_ins/index.ts';
+import { type ICheckInsRepository } from '../../repositories/database/check_ins/index.ts';
 
 interface RegisterCheckInRequest {
   userId: string;
@@ -14,12 +14,19 @@ interface RegisterCheckInResponse {
 }
 
 export class RegisterCheckIn {
-  constructor(private checkInsRepository: CheckInsRepository) {}
+  constructor(private checkInsRepository: ICheckInsRepository) {}
 
   async execute({
     userId,
     gymId,
   }: RegisterCheckInRequest): Promise<RegisterCheckInResponse> {
+    const checkInOnSameDate = await this.checkInsRepository.findByUserIdOnDate(
+      userId,
+      new Date(),
+    );
+
+    if (checkInOnSameDate) throw new Error();
+
     const checkIn = await this.checkInsRepository.create({
       user_id: userId,
       gym_id: gymId,
