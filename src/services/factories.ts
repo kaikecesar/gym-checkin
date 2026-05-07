@@ -1,5 +1,5 @@
 // Application
-import { UsersRepository } from '../repositories/database/users/users.ts';
+import { UsersRepository } from '../repositories/database/users.ts';
 import { Auth } from './auth/auth.ts';
 import { RegisterUser } from './users/users.ts';
 

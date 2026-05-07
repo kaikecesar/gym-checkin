@@ -1,9 +1,9 @@
 // Libraries
-import type { Prisma, User } from '../../../generated/prisma/client.ts';
+import type { Prisma, User } from '../../generated/prisma/client.ts';
 
 // Application
-import { prisma } from '../../../lib/prisma.ts';
-import type { IUsersRepository } from './types.ts';
+import { prisma } from '../../lib/prisma.ts';
+import type { IUsersRepository } from '../repositories.types.ts';
 
 export class UsersRepository implements IUsersRepository {
   async create(data: Prisma.UserCreateInput): Promise<User> {

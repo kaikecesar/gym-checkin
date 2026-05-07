@@ -5,7 +5,7 @@ import { faker } from '@faker-js/faker';
 
 // Application
 import { RegisterUser, UserProfile } from './users.ts';
-import { InMemoryUsersRepository } from '../../repositories/in_memory/users/users_repository.ts';
+import { InMemoryUsersRepository } from '../../repositories/in_memory/users.ts';
 import { ResourceNotFound, UserAlreadyExistsError } from '../errors.ts';
 
 describe('Users service', () => {

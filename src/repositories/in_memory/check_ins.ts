@@ -1,17 +1,24 @@
 // Libraries
 import { faker } from '@faker-js/faker';
-import type { CheckIn, Prisma } from '../../../generated/prisma/client.ts';
+import type { CheckIn, Prisma } from '../../generated/prisma/client.ts';
 
 // Application
-import type { ICheckInsRepository } from '../../database/check_ins/types.ts';
+import type { ICheckInsRepository } from '../repositories.types.ts';
+import dayjs from 'dayjs';
 
 export class InMemoryCheckInsRepository implements ICheckInsRepository {
   public records: CheckIn[] = [];
 
   async findByUserIdOnDate(userId: string, date: Date) {
-    const checkInOnSameDate = this.records.find(
-      (checkIn) => checkIn.user_id === userId,
-    );
+    const startOfTheDay = dayjs(date).startOf('date');
+    const endOfTheDay = dayjs(date).endOf('date');
+
+    const checkInOnSameDate = this.records.find((checkIn) => {
+      const checkInDate = dayjs(checkIn.created_at);
+      const isOnSameDate =
+        checkInDate.isAfter(startOfTheDay) && checkInDate.isBefore(endOfTheDay);
+      return checkIn.user_id === userId && isOnSameDate;
+    });
 
     if (!checkInOnSameDate) return null;
 

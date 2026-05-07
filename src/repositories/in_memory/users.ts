@@ -1,9 +1,9 @@
 // Libraries
 import { faker } from '@faker-js/faker';
-import type { Prisma, User } from '../../../generated/prisma/client.ts';
+import type { Prisma, User } from '../../generated/prisma/client.ts';
 
 // Application
-import type { IUsersRepository } from '../../database/users/types.ts';
+import type { IUsersRepository } from '../repositories.types.ts';
 
 export class InMemoryUsersRepository implements IUsersRepository {
   public records: User[] = [];
