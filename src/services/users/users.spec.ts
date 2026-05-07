@@ -94,7 +94,7 @@ describe('Users service', () => {
     });
 
     it('should not be able to get user profile with wrong id', async () => {
-      expect(() =>
+      await expect(() =>
         userProfile.execute({
           userId: 'non-existing-id',
         }),

@@ -9,6 +9,14 @@ import dayjs from 'dayjs';
 export class InMemoryCheckInsRepository implements ICheckInsRepository {
   public records: CheckIn[] = [];
 
+  async findById(id: string) {
+    const checkIn = this.records.find((record) => record.id === id);
+
+    if (!checkIn) return null;
+
+    return checkIn;
+  }
+
   async countByUserId(userId: string) {
     return this.records.filter((record) => record.user_id === userId).length;
   }
@@ -45,6 +53,16 @@ export class InMemoryCheckInsRepository implements ICheckInsRepository {
     };
 
     this.records.push(checkIn);
+
+    return checkIn;
+  }
+
+  async save(checkIn: CheckIn) {
+    const checkInIndex = this.records.findIndex(
+      (record) => record.id === checkIn.id,
+    );
+
+    if (checkInIndex >= 0) this.records[checkInIndex] = checkIn;
 
     return checkIn;
   }

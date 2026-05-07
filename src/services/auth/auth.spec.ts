@@ -36,7 +36,7 @@ describe('Auth service', () => {
     });
 
     it('should not be able to authenticate with wrong email', async () => {
-      expect(() =>
+      await expect(() =>
         authenticate.execute({
           email: faker.internet.email(),
           password: faker.internet.password(),
@@ -53,7 +53,7 @@ describe('Auth service', () => {
         password_hash: await hash(faker.internet.password(), 6),
       });
 
-      expect(() =>
+      await expect(() =>
         authenticate.execute({
           email: fakeEmail,
           password: faker.internet.password(),

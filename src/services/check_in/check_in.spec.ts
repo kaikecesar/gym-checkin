@@ -8,10 +8,15 @@ import {
   FetchUserCheckInsHistory,
   GetUserMetrics,
   RegisterCheckIn,
+  ValidateCheckIn,
 } from './check_in.ts';
 import { InMemoryGymsRepository } from '../../repositories/in_memory/gyms.ts';
 import type { Gym } from '../../generated/prisma/client.ts';
-import { MaxDistanceError, MaxNumberOfCheckInsError } from '../errors.ts';
+import {
+  MaxDistanceError,
+  MaxNumberOfCheckInsError,
+  ResourceNotFoundError,
+} from '../errors.ts';
 
 describe('Check In service', () => {
   describe('register', () => {
@@ -192,6 +197,40 @@ describe('Check In service', () => {
       });
 
       expect(checkInsCount).toEqual(2);
+    });
+  });
+
+  describe('validate', () => {
+    let checkInRepository: InMemoryCheckInsRepository;
+    let validateCheckIn: ValidateCheckIn;
+
+    beforeEach(async () => {
+      checkInRepository = new InMemoryCheckInsRepository();
+      validateCheckIn = new ValidateCheckIn(checkInRepository);
+    });
+
+    it('should be able to validate the check-in', async () => {
+      const createdCheckIn = await checkInRepository.create({
+        gym_id: faker.string.uuid(),
+        user_id: faker.string.uuid(),
+      });
+
+      const { checkIn } = await validateCheckIn.execute({
+        checkInId: createdCheckIn.id,
+      });
+
+      expect(checkIn.validated_at).toEqual(expect.any(Date));
+      expect(checkInRepository.records[0]?.validated_at).toEqual(
+        expect.any(Date),
+      );
+    });
+
+    it('should not be able to validate an inexistent check-in', async () => {
+      await expect(() =>
+        validateCheckIn.execute({
+          checkInId: faker.string.uuid(),
+        }),
+      ).rejects.toBeInstanceOf(ResourceNotFoundError);
     });
   });
 });

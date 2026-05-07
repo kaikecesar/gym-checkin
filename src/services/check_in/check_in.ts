@@ -43,6 +43,15 @@ interface GetUserMetricsResponse {
   checkInsCount: number;
 }
 
+// Validate CheckIn
+interface ValidateCheckInRequest {
+  checkInId: string;
+}
+
+interface ValidateCheckInResponse {
+  checkIn: CheckIn;
+}
+
 export class RegisterCheckIn {
   constructor(
     private checkInsRepository: ICheckInsRepository,
@@ -110,5 +119,23 @@ export class GetUserMetrics {
     const checkInsCount = await this.checkInsRepository.countByUserId(userId);
 
     return { checkInsCount };
+  }
+}
+
+export class ValidateCheckIn {
+  constructor(private checkInsRepository: ICheckInsRepository) {}
+
+  async execute({
+    checkInId,
+  }: ValidateCheckInRequest): Promise<ValidateCheckInResponse> {
+    const checkIn = await this.checkInsRepository.findById(checkInId);
+
+    if (!checkIn) throw new ResourceNotFoundError();
+
+    checkIn.validated_at = new Date();
+
+    this.checkInsRepository.save(checkIn);
+
+    return { checkIn };
   }
 }
