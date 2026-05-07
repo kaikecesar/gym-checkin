@@ -4,7 +4,11 @@ import { faker } from '@faker-js/faker';
 
 // Application
 import { InMemoryCheckInsRepository } from '../../repositories/in_memory/check_ins.ts';
-import { RegisterCheckIn } from './check_in.ts';
+import {
+  FetchUserCheckInsHistory,
+  GetUserMetrics,
+  RegisterCheckIn,
+} from './check_in.ts';
 import { InMemoryGymsRepository } from '../../repositories/in_memory/gyms.ts';
 import type { Gym } from '../../generated/prisma/client.ts';
 import { MaxDistanceError, MaxNumberOfCheckInsError } from '../errors.ts';
@@ -106,6 +110,88 @@ describe('Check In service', () => {
           userLng: 0,
         }),
       ).rejects.toBeInstanceOf(MaxDistanceError);
+    });
+  });
+
+  describe('history', () => {
+    let checkInRepository: InMemoryCheckInsRepository;
+    let fetchUserCheckInsHistory: FetchUserCheckInsHistory;
+
+    beforeEach(async () => {
+      checkInRepository = new InMemoryCheckInsRepository();
+      fetchUserCheckInsHistory = new FetchUserCheckInsHistory(
+        checkInRepository,
+      );
+    });
+
+    it('should be able to fetch check-in history', async () => {
+      const fakeUserId = faker.string.uuid();
+      const fakeCheckIn1 = await checkInRepository.create({
+        gym_id: faker.string.uuid(),
+        user_id: fakeUserId,
+      });
+
+      const fakeCheckIn2 = await checkInRepository.create({
+        gym_id: faker.string.uuid(),
+        user_id: fakeUserId,
+      });
+
+      const { checkIns } = await fetchUserCheckInsHistory.execute({
+        userId: fakeUserId,
+        page: 1,
+      });
+
+      expect(checkIns).toHaveLength(2);
+      expect(checkIns).toEqual([fakeCheckIn1, fakeCheckIn2]);
+    });
+
+    it('should be able to fetch paginated check-in history', async () => {
+      for (let i = 1; i <= 22; i++) {
+        await checkInRepository.create({
+          gym_id: `gym-${i}`,
+          user_id: 'user-01',
+        });
+      }
+
+      const { checkIns } = await fetchUserCheckInsHistory.execute({
+        userId: 'user-01',
+        page: 2,
+      });
+
+      expect(checkIns).toHaveLength(2);
+      expect(checkIns).toEqual([
+        expect.objectContaining({ gym_id: 'gym-21' }),
+        expect.objectContaining({ gym_id: 'gym-22' }),
+      ]);
+    });
+  });
+
+  describe('metrics', () => {
+    let checkInRepository: InMemoryCheckInsRepository;
+    let getUserMetrics: GetUserMetrics;
+
+    beforeEach(async () => {
+      checkInRepository = new InMemoryCheckInsRepository();
+      getUserMetrics = new GetUserMetrics(checkInRepository);
+    });
+
+    it('should be able to fetch check-in history', async () => {
+      const fakeUserId = faker.string.uuid();
+      await checkInRepository.create({
+        gym_id: faker.string.uuid(),
+        user_id: fakeUserId,
+      });
+
+      await checkInRepository.create({
+        gym_id: faker.string.uuid(),
+        user_id: fakeUserId,
+      });
+
+      const { checkInsCount } = await getUserMetrics.execute({
+        userId: fakeUserId,
+      });
+
+      expect(checkInsCount).toEqual(2);
     });
   });
 });

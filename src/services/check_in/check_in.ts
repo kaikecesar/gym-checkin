@@ -24,6 +24,25 @@ interface RegisterCheckInResponse {
   checkIn: CheckIn;
 }
 
+// History
+interface FetchUserCheckInsHistoryRequest {
+  userId: string;
+  page: number;
+}
+
+interface FetchUserCheckInsHistoryResponse {
+  checkIns: CheckIn[];
+}
+
+// Metrics
+interface GetUserMetricsRequest {
+  userId: string;
+}
+
+interface GetUserMetricsResponse {
+  checkInsCount: number;
+}
+
 export class RegisterCheckIn {
   constructor(
     private checkInsRepository: ICheckInsRepository,
@@ -63,5 +82,33 @@ export class RegisterCheckIn {
     });
 
     return { checkIn };
+  }
+}
+
+export class FetchUserCheckInsHistory {
+  constructor(private checkInsRepository: ICheckInsRepository) {}
+
+  async execute({
+    userId,
+    page,
+  }: FetchUserCheckInsHistoryRequest): Promise<FetchUserCheckInsHistoryResponse> {
+    const checkIns = await this.checkInsRepository.findManyByUserId(
+      userId,
+      page,
+    );
+
+    return { checkIns };
+  }
+}
+
+export class GetUserMetrics {
+  constructor(private checkInsRepository: ICheckInsRepository) {}
+
+  async execute({
+    userId,
+  }: GetUserMetricsRequest): Promise<GetUserMetricsResponse> {
+    const checkInsCount = await this.checkInsRepository.countByUserId(userId);
+
+    return { checkInsCount };
   }
 }

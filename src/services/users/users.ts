@@ -5,6 +5,7 @@ import type { User } from '../../generated/prisma/client.ts';
 // Application
 import type { IUsersRepository } from '../../repositories/database/users/types.ts';
 import { ResourceNotFoundError, UserAlreadyExistsError } from '../errors.ts';
+import type { ICheckInsRepository } from '../../repositories/repositories.types.ts';
 
 // Register
 interface RegisterUserRequest {
