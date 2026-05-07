@@ -7,7 +7,11 @@ import {
   type IGymsRepository,
 } from '../../repositories/repositories.types.ts';
 import { getDistanceBetweenCoodinates } from '../../utils/get_distance_between_coordinates.ts';
-import { ResourceNotFound } from '../errors.ts';
+import {
+  MaxDistanceError,
+  MaxNumberOfCheckInsError,
+  ResourceNotFoundError,
+} from '../errors.ts';
 
 interface RegisterCheckInRequest {
   userId: string;
@@ -36,7 +40,7 @@ export class RegisterCheckIn {
 
     const gym = await this.gymsRepository.findById(gymId);
 
-    if (!gym) throw new ResourceNotFound();
+    if (!gym) throw new ResourceNotFoundError();
 
     // Calculate distance between user and gym
     const distance = getDistanceBetweenCoodinates(
@@ -44,14 +48,14 @@ export class RegisterCheckIn {
       { latitude: gym.lat.toNumber(), longitude: gym.lng.toNumber() },
     );
 
-    if (distance > MAX_DISTANCE_IN_KILOMETERS) throw new Error();
+    if (distance > MAX_DISTANCE_IN_KILOMETERS) throw new MaxDistanceError();
 
     const checkInOnSameDate = await this.checkInsRepository.findByUserIdOnDate(
       userId,
       new Date(),
     );
 
-    if (checkInOnSameDate) throw new Error();
+    if (checkInOnSameDate) throw new MaxNumberOfCheckInsError();
 
     const checkIn = await this.checkInsRepository.create({
       user_id: userId,

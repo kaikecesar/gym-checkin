@@ -4,7 +4,7 @@ import type { User } from '../../generated/prisma/client.ts';
 
 // Application
 import type { IUsersRepository } from '../../repositories/database/users/types.ts';
-import { ResourceNotFound, UserAlreadyExistsError } from '../errors.ts';
+import { ResourceNotFoundError, UserAlreadyExistsError } from '../errors.ts';
 
 // Register
 interface RegisterUserRequest {
@@ -62,7 +62,7 @@ export class UserProfile {
     const user = await this.usersRepository.findById(userId);
 
     if (!user) {
-      throw new ResourceNotFound();
+      throw new ResourceNotFoundError();
     }
 
     return { user };

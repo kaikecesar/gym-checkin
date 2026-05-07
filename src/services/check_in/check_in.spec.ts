@@ -7,6 +7,7 @@ import { InMemoryCheckInsRepository } from '../../repositories/in_memory/check_i
 import { RegisterCheckIn } from './check_in.ts';
 import { InMemoryGymsRepository } from '../../repositories/in_memory/gyms.ts';
 import type { Gym } from '../../generated/prisma/client.ts';
+import { MaxDistanceError, MaxNumberOfCheckInsError } from '../errors.ts';
 
 describe('Check In service', () => {
   describe('register', () => {
@@ -63,7 +64,7 @@ describe('Check In service', () => {
           userLat: -23.0132546,
           userLng: -47.5177239,
         }),
-      ).rejects.toBeInstanceOf(Error);
+      ).rejects.toBeInstanceOf(MaxNumberOfCheckInsError);
     });
 
     it('should be able to check in twice but in diferent days', async () => {
@@ -104,7 +105,7 @@ describe('Check In service', () => {
           userLat: 0,
           userLng: 0,
         }),
-      ).rejects.toBeInstanceOf(Error);
+      ).rejects.toBeInstanceOf(MaxDistanceError);
     });
   });
 });

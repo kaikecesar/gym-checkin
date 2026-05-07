@@ -1,10 +1,9 @@
 // Libraries
 import { faker } from '@faker-js/faker';
-import type { Gym, Prisma } from '../../generated/prisma/client.ts';
+import { Prisma, type Gym } from '../../generated/prisma/client.ts';
 
 // Application
 import type { IGymsRepository } from '../repositories.types.ts';
-import { Decimal } from '@prisma/client/runtime/client';
 
 export class InMemoryGymsRepository implements IGymsRepository {
   public records: Gym[] = [];
@@ -17,12 +16,12 @@ export class InMemoryGymsRepository implements IGymsRepository {
 
   async create(data: Prisma.GymCreateInput) {
     const gym = {
-      id: faker.string.uuid(),
+      id: data.id ?? faker.string.uuid(),
       title: data.title,
       description: data.description ?? null,
       phone: data.phone ?? null,
-      lat: new Decimal(String(data.lat)),
-      lng: new Decimal(String(data.lng)),
+      lat: new Prisma.Decimal(String(data.lat)),
+      lng: new Prisma.Decimal(String(data.lng)),
       checkIns: data.checkIns,
     };
 

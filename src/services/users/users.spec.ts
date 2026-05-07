@@ -6,7 +6,7 @@ import { faker } from '@faker-js/faker';
 // Application
 import { RegisterUser, UserProfile } from './users.ts';
 import { InMemoryUsersRepository } from '../../repositories/in_memory/users.ts';
-import { ResourceNotFound, UserAlreadyExistsError } from '../errors.ts';
+import { ResourceNotFoundError, UserAlreadyExistsError } from '../errors.ts';
 
 describe('Users service', () => {
   describe('register', () => {
@@ -98,7 +98,7 @@ describe('Users service', () => {
         userProfile.execute({
           userId: 'non-existing-id',
         }),
-      ).rejects.toBeInstanceOf(ResourceNotFound);
+      ).rejects.toBeInstanceOf(ResourceNotFoundError);
     });
   });
 });
