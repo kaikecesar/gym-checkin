@@ -14,7 +14,14 @@ export interface IUsersRepository {
   findById(id: string): Promise<User | null>;
 }
 
+export interface FindManyNearByParams {
+  lat: number;
+  lng: number;
+}
+
 export interface IGymsRepository {
   findById(id: string): Promise<Gym | null>;
   create(data: Prisma.GymCreateInput): Promise<Gym>;
+  searchMany(query: string, page: number): Promise<Gym[]>;
+  findManyNearBy(params: FindManyNearByParams): Promise<Gym[]>;
 }
