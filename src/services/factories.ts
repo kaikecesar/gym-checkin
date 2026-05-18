@@ -5,14 +5,14 @@ import { RegisterUser } from './users/users.ts';
 
 export function factoryAuth() {
   const usersRepository = new UsersRepository();
-  const auth = new Auth(usersRepository);
+  const useCase = new Auth(usersRepository);
 
-  return auth;
+  return useCase;
 }
 
 export function factoryRegisterUser() {
   const usersRepository = new UsersRepository();
-  const registerUser = new RegisterUser(usersRepository);
+  const useCase = new RegisterUser(usersRepository);
 
-  return registerUser;
+  return useCase;
 }
