@@ -1,12 +1,17 @@
 // Libraries
 import fastify from 'fastify';
 import { ZodError } from 'zod';
+import fastifyJwt from '@fastify/jwt';
 
 // Application
 import { appRoutes } from './cloud_apis/routes.ts';
 import { env } from './env/index.ts';
 
 export const app = fastify();
+
+app.register(fastifyJwt, {
+  secret: env.JWT_SECRET,
+});
 
 app.register(appRoutes);
 
