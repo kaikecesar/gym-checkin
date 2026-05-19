@@ -4,7 +4,10 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 
 // Application
 import { UserAlreadyExistsError } from '../../services/errors.ts';
-import { factoryRegisterUser } from '../../services/factories.ts';
+import {
+  factoryGetUserProfile,
+  factoryRegisterUser,
+} from '../../services/factories.ts';
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
   const registerBodySchema = z.object({
@@ -30,7 +33,8 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
 }
 
 export async function profile(request: FastifyRequest, reply: FastifyReply) {
-  await request.jwtVerify();
+  const getUserProfile = factoryGetUserProfile();
+  const { user } = await getUserProfile.execute({ userId: request.user.sub });
 
-  return reply.status(200).send();
+  return reply.status(200).send({ user: { ...user, passwordHash: undefined } });
 }

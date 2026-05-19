@@ -18,11 +18,11 @@ interface RegisterUserResponse {
 }
 
 // Profile
-interface UserProfileRequest {
+interface GetUserProfileRequest {
   userId: string;
 }
 
-interface UserProfileResponse {
+interface GetUserProfileResponse {
   user: User;
 }
 
@@ -54,10 +54,12 @@ export class RegisterUser {
   }
 }
 
-export class UserProfile {
+export class GetUserProfile {
   constructor(private usersRepository: IUsersRepository) {}
 
-  async execute({ userId }: UserProfileRequest): Promise<UserProfileResponse> {
+  async execute({
+    userId,
+  }: GetUserProfileRequest): Promise<GetUserProfileResponse> {
     // Validate
     const user = await this.usersRepository.findById(userId);
 
