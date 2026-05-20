@@ -4,7 +4,7 @@ import { expect, it, describe, beforeEach } from 'vitest';
 import { faker } from '@faker-js/faker';
 
 // Application
-import { RegisterUser, UserProfile } from './users.ts';
+import { RegisterUser, GetUserProfile } from './users.ts';
 import { InMemoryUsersRepository } from '../../repositories/in_memory/users.ts';
 import { ResourceNotFoundError, UserAlreadyExistsError } from '../errors.ts';
 
@@ -69,11 +69,11 @@ describe('Users service', () => {
 
   describe('userProfile', () => {
     let usersRepository: InMemoryUsersRepository;
-    let userProfile: UserProfile;
+    let userProfile: GetUserProfile;
 
     beforeEach(() => {
       usersRepository = new InMemoryUsersRepository();
-      userProfile = new UserProfile(usersRepository);
+      userProfile = new GetUserProfile(usersRepository);
     });
     it('should be able to get user profile', async () => {
       // Mock users
