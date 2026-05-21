@@ -2,8 +2,8 @@
 import type { FastifyInstance } from 'fastify';
 
 // Application
-import { profile, register } from './controllers/user.ts';
-import { auth } from './controllers/auth.ts';
+import { profile, register } from './controllers/user/user.ts';
+import { auth } from './controllers/auth/auth.ts';
 import { verifyJWT } from '../middlewares/verify_jwt.ts';
 
 export async function appRoutes(app: FastifyInstance) {

@@ -3,8 +3,8 @@ import z from 'zod';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 // Application
-import { InvalidCredentialsError } from '../../services/errors.ts';
-import { factoryAuth } from '../../services/factories.ts';
+import { InvalidCredentialsError } from '../../../services/errors.ts';
+import { factoryAuth } from '../../../services/factories.ts';
 
 export async function auth(request: FastifyRequest, reply: FastifyReply) {
   const authBodySchema = z.object({

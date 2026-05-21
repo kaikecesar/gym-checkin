@@ -9,8 +9,10 @@
     "start": "node build/server.js",
     "build": "tsup src --out-dir build",
     "lint": "eslint src --ext .ts",
-    "test": "vitest run",
+    "test": "vitest run --project unit",
+    "test:e2e": "vitest run --project e2e",
     "test:watch": "vitest",
+    "test:e2e:watch": "vitest --project e2e",
     "test:coverage": "vitest run --coverage"
   },
   "repository": {
@@ -29,9 +31,11 @@
     "@rocketseat/eslint-config": "2.2.2",
     "@types/node": "25.6.0",
     "@types/pg": "8.20.0",
+    "@types/supertest": "7.2.0",
     "@vitest/coverage-v8": "4.1.5",
     "eslint": "8.57.1",
     "prisma": "7.8.0",
+    "supertest": "7.2.2",
     "tsup": "8.5.1",
     "tsx": "4.21.0",
     "typescript": "6.0.3",

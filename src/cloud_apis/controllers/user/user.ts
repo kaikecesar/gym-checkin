@@ -3,11 +3,11 @@ import z from 'zod';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 // Application
-import { UserAlreadyExistsError } from '../../services/errors.ts';
+import { UserAlreadyExistsError } from '../../../services/errors.ts';
 import {
   factoryGetUserProfile,
   factoryRegisterUser,
-} from '../../services/factories.ts';
+} from '../../../services/factories.ts';
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
   const registerBodySchema = z.object({
